@@ -1,8 +1,14 @@
 # SlackingOff
 计划是搞一个摸鱼小工具合集
 
+# 看股价小工具
 
 ![微信截图_20250430113423](https://github.com/user-attachments/assets/ea6a7918-1517-4517-bb63-df04b2e38b69)
+
+
+# 打发时间小工具
+
+<img width="304" alt="微信图片_20250430134344" src="https://github.com/user-attachments/assets/ec7e8e51-7b62-4011-9c55-558eab66f322" />
 
 
 # exe包请从网盘提取
