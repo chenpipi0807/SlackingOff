@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0);
+            overflow: hidden;
+        }
+        #floating-window {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            transition: transform 0.2s, opacity 0.3s;
+            -webkit-app-region: drag; /* 整个窗口变为可拖动区域 */
+        }
+        #floating-window:hover {
+            transform: scale(1.02);
+        }
+        #task-text {
+            font-size: 16px;
+            color: #333;
+            text-align: left;
+            margin-bottom: 15px;
+            user-select: none;
+        }
+        #window-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+            cursor: move;
+            user-select: none;
+        }
+        .button-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: flex-end;
+        }
+        .control-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            -webkit-app-region: no-drag; /* 按钮不可拖动，可以正常点击 */
+        }
+
+        #hide-button {
+            background-color: #ffcc00;
+        }
+        #hide-button:hover {
+            background-color: #e6b800;
+        }
+        #close-button {
+            background-color: #ff5f57;
+        }
+        #close-button:hover {
+            background-color: #e64c4c;
+        }
+        .hidden {
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div id="floating-window">
+        <div id="window-header"></div>
+        <div id="task-container" onclick="showRandomTask()" style="-webkit-app-region: no-drag">
+            <p id="task-text">点击这里获取一个新的任务！</p>
+        </div>
+        <div class="button-container">
+            <button id="hide-button" class="control-button" title="隐藏">−</button>
+            <button id="close-button" class="control-button" title="关闭">×</button>
+        </div>
+    </div>
+
+    <script>
+        // Electron API access
+        const { ipcRenderer } = require('electron');
+        
+        // 简化代码，使用Electron原生拖动功能
+        const floatingWindow = document.getElementById('floating-window');
+        const taskContainer = document.getElementById('task-container');
+        const hideButton = document.getElementById('hide-button');
+        const closeButton = document.getElementById('close-button');
+        
+        // 初始化窗口位置
+        floatingWindow.style.bottom = '20px';
+        floatingWindow.style.right = '20px';
+        
+        // Hide button functionality
+        hideButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            floatingWindow.classList.toggle('hidden');
+            hideButton.textContent = floatingWindow.classList.contains('hidden') ? '⊕' : '−';
+            hideButton.title = floatingWindow.classList.contains('hidden') ? '显示' : '隐藏';
+        });
+        
+        // Close button functionality
+        closeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            ipcRenderer.send('close-app');
+        });
+        
+        const tasks = [
+            "给办公室里的三个物品编一段对话。",
+            "想象你的电脑是一个傲娇的AI助手，它会怎么吐槽你？",
+            "随机选一个英文单词用它编一句荒诞的句子。",
+            "用当前时间编一个故事开头。",
+            "数一数楼下经过的人中有多少人戴了红色鞋子。",
+            "用窗外的云朵形状编一个小动物。",
+            "把同事的名字和奇怪职业组合。",
+            "如果XXX变成超级英雄……造句。",
+            "如果工位能穿越时空，你会带哪三样东西去中世纪？",
+            "想象自己是一只蟑螂，在办公室里偷偷观察人类的生活。",
+            "用手机备忘录写一首打油诗。",
+            "编一个‘职场版灰姑娘’故事。",
+            "用同事的姓名缩写编一个暗号。",
+            "猜猜老板的茶杯里泡的是什么。",
+            "假装整理文件夹，其实把文件名改成搞笑内容。",
+            "在会议记录里悄悄加一句：“此处应有掌声”。",
+            "闭眼回忆小时候最尴尬的一件事，写成三行诗。",
+            "试着背出《哈利·波特》所有角色的名字。",
+            "给同事设计一个‘隐藏身份’。",
+            "用同事的表情包生成一句职场黑话。",
+            "用颜文字拼出一句话。",
+            "在聊天框里用符号画一只猫。",
+            "写一篇论文标题：论摸鱼行为对人类文明发展的积极影响。",
+            "设计一份‘办公室生物多样性调查报告’。",
+            "用番茄钟计时5分钟，假装专注工作，实际在数蚂蚁搬家。",
+            "给自己设一个‘摸鱼KPI’。",
+            "学五分钟折纸。",
+            "用鼠标垫练字，写“今天也要认真摸鱼”书法。",
+            "思考：如果摸鱼是一种生存策略，那么人类是否正在进化？",
+            "用苏格拉底式提问法分析为什么奶茶比咖啡更适合摸鱼。",
+            "用手机拍一张‘办公室的抽象艺术’照片。",
+            "用录音功能录下白噪音+自己的内心OS。",
+            "把‘请勿打扰’翻译成其他语言并配上奇怪语气。",
+            "把老板的口头禅改编成rap歌词。",
+            "给同事设计一个虚拟的人生经历。",
+            "为工位设定一个‘隐藏剧情’。",
+            "测试‘摸鱼效率与咖啡因浓度的关系’。",
+            "用便签纸做‘摸鱼能量守恒定律’模型。",
+            "预言五分钟后老板会不会来查岗。",
+            "给2050年的自己写一封信。",
+            "回答‘如果给你三天不用摸鱼，你会怎么做？’。",
+            "用‘是/否’回答老板的每一个问题（除非他问你工资）。",
+            "编一本《摸鱼简史》，从原始人抓鱼到现代人刷手机。",
+            "写一封‘古代摸鱼者’与‘现代摸鱼者’的跨时空对话。",
+            "模仿不同动物的动作。",
+            "用肢体语言表演‘一只摸鱼的猫’。",
+            "把正常流程倒过来做。",
+            "用左手完成一项日常工作。",
+            "把同事的名字套进网络热梗。",
+            "用‘内卷’‘躺平’‘破防’等词造一个成语接龙。",
+            "假装做一个‘摸鱼人格测验’。",
+            "设计一份‘办公室生存指数评估表’。",
+            "在文档里藏一句‘老板看不见的笑话’。",
+            "给同事的电脑壁纸换一张‘摸鱼温馨提示’。",
+            "写一封给十年前自己的信。",
+            "想象自己穿越到唐朝当‘摸鱼诗人’，写一首古风诗。",
+            "开一门‘高级摸鱼技巧’线上课程。",
+            "制作PPT讲解‘摸鱼的哲学意义’。",
+            "给同事发一条‘摸鱼邀请’。",
+            "在群里发一个‘摸鱼成就系统’截图。",
+            "用荧光笔在草稿纸上涂鸦一幅‘摸鱼星球地图’。",
+            "用马克笔给键盘上的键帽画上表情包。",
+            "收集‘每天摸鱼次数与幸福感曲线图’。",
+            "制作‘摸鱼行为与工作效率的相关性图表’。",
+            "为‘摸鱼神器’写广告语。",
+            "设计一款‘摸鱼APP’的宣传海报。",
+            "写一本小说《摸鱼者联盟》。",
+            "发表一篇散文《我在工位上的隐秘宇宙》。",
+            "创办一家‘摸鱼咨询公司’。",
+            "制定‘摸鱼行业五年发展规划’。",
+            "写一份‘摸鱼协议V2.0’。",
+            "编写‘摸鱼代码’说明书。",
+            "整理一份‘关于摸鱼的冷知识’。",
+            "发现‘摸鱼与奶茶摄入量的黄金比例’。",
+            "录制一节‘摸鱼入门课’视频。",
+            "制作‘摸鱼英语100句’。",
+            "撰写《论摸鱼行为对团队协作的促进作用》。",
+            "发表一篇《摸鱼者大脑活跃区域研究》。",
+            "撰写‘全球摸鱼大会开幕’新闻稿。",
+            "发布‘年度摸鱼红黑榜’。",
+            "拟一份‘摸鱼合法化提案’。",
+            "编写《摸鱼者权利法案》。",
+            "出具‘摸鱼健康诊断书’。",
+            "设计‘摸鱼康复计划’。",
+            "发布‘摸鱼顾问’招聘信息。",
+            "招募‘摸鱼文化大使’。",
+            "编写《摸鱼圣地打卡指南》。",
+            "推荐‘摸鱼主题一日游’行程。",
+            "发行《摸鱼穿搭指南》。",
+            "制作‘摸鱼发型排行榜’。",
+            "发布‘摸鱼能量补给餐单’。",
+            "创新菜品：‘老板看不到的零食盲盒’。",
+            "发明‘摸鱼检测仪’。",
+            "推出‘摸鱼伴侣机器人’。",
+            "调查‘摸鱼行为的社会学意义’。",
+            "分析‘摸鱼亚文化群体画像’。",
+            "举办‘年度摸鱼奥斯卡’。",
+            "颁发‘摸鱼诺贝尔奖’。",
+            "写一句座右铭贴在桌上：‘摸鱼不是逃避，而是为了更好地冲锋’。",
+            "画一只猫在工位上打盹，配文：‘它选择了优雅的摸鱼方式’。"
+        ];
+
+        function showRandomTask() {
+            const randomIndex = Math.floor(Math.random() * tasks.length);
+            document.getElementById('task-text').innerText = tasks[randomIndex];
+        }
+
+        // Show a random task on window load
+        window.onload = showRandomTask;
+    </script>
+</body>
+</html>
