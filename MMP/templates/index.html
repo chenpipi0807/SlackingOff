@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Studio Code - Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>💻</text></svg>">
+</head>
+<body>
+    <div class="ide-container">
+        <!-- 顶部菜单栏 -->
+        <div class="menu-bar">
+            <div class="menu-items">
+                <span class="menu-item">文件</span>
+                <span class="menu-item">编辑</span>
+                <span class="menu-item">选择</span>
+                <span class="menu-item">查看</span>
+                <span class="menu-item">转到</span>
+                <span class="menu-item">运行</span>
+                <span class="menu-item">终端</span>
+                <span class="menu-item">帮助</span>
+            </div>
+            <div class="window-title">Visual Studio Code - c:\MMP</div>
+            <div class="window-controls">
+                <span>─</span>
+                <span>□</span>
+                <span>✕</span>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 左侧边栏 -->
+            <div class="sidebar">
+                <div class="sidebar-icons">
+                    <div class="icon active" title="资源管理器">📁</div>
+                    <div class="icon" title="搜索">🔍</div>
+                    <div class="icon" title="源代码管理">🔀</div>
+                    <div class="icon" title="运行和调试">▶️</div>
+                    <div class="icon" title="扩展">📦</div>
+                </div>
+                <div class="sidebar-content">
+                    <div class="section-title">资源管理器</div>
+                    <div class="file-tree">
+                        <div class="folder">
+                            <span class="folder-icon">📂</span> MMP
+                            <div class="folder-content">
+                                <div class="file">📄 app.py</div>
+                                <div class="file">📄 requirements.txt</div>
+                                <div class="file">📄 README.md</div>
+                                <div class="folder">
+                                    <span class="folder-icon">📂</span> templates
+                                    <div class="folder-content">
+                                        <div class="file">📄 index.html</div>
+                                    </div>
+                                </div>
+                                <div class="folder">
+                                    <span class="folder-icon">📂</span> static
+                                    <div class="folder-content">
+                                        <div class="file">📄 style.css</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 编辑器区域 -->
+            <div class="editor-area">
+                <!-- 标签栏 -->
+                <div class="tabs">
+                    <div class="tab">
+                        <span class="file-icon">📄</span>
+                        <span>app.py</span>
+                        <span class="close-tab">✕</span>
+                    </div>
+                    <div class="tab active">
+                        <span class="file-icon">📄</span>
+                        <span>gomoku_game.py</span>
+                        <span class="modified">●</span>
+                        <span class="close-tab">✕</span>
+                    </div>
+                </div>
+
+                <!-- 假代码编辑器 -->
+                <div class="editor">
+                    <div class="line-numbers">
+                        <div>1</div>
+                        <div>2</div>
+                        <div>3</div>
+                        <div>4</div>
+                        <div>5</div>
+                        <div>6</div>
+                        <div>7</div>
+                        <div>8</div>
+                        <div>9</div>
+                        <div>10</div>
+                        <div>11</div>
+                        <div>12</div>
+                        <div>13</div>
+                        <div>14</div>
+                        <div>15</div>
+                    </div>
+                    <div class="code-content">
+                        <div><span class="keyword">import</span> random</div>
+                        <div><span class="keyword">from</span> typing <span class="keyword">import</span> List, Tuple</div>
+                        <div></div>
+                        <div><span class="keyword">class</span> <span class="class-name">GomokuGame</span>:</div>
+                        <div>    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):</div>
+                        <div>        <span class="keyword">self</span>.board = [[<span class="string">' '</span>] * <span class="number">15</span>] * <span class="number">15</span></div>
+                        <div>        <span class="keyword">self</span>.players = {}</div>
+                        <div>        <span class="keyword">self</span>.game_state = <span class="string">"waiting"</span></div>
+                        <div></div>
+                        <div>    <span class="keyword">def</span> <span class="function">place_stone</span>(<span class="keyword">self</span>, row: <span class="class-name">int</span>, col: <span class="class-name">int</span>):</div>
+                        <div>        <span class="keyword">if</span> <span class="keyword">self</span>.board[row][col] == <span class="string">' '</span>:</div>
+                        <div>            <span class="comment"># 落子逻辑</span></div>
+                        <div>            <span class="keyword">self</span>.board[row][col] = <span class="string">'●'</span></div>
+                        <div>            <span class="keyword">return</span> <span class="keyword">self</span>.check_winner(row, col)</div>
+                        <div>        <span class="keyword">return</span> <span class="keyword">False</span></div>
+                    </div>
+                </div>
+
+                <!-- 终端面板 -->
+                <div class="terminal-panel">
+                    <div class="panel-header">
+                        <div class="panel-tabs">
+                            <div class="panel-tab active">
+                                <span>终端</span>
+                            </div>
+                            <div class="panel-tab">
+                                <span>问题</span>
+                            </div>
+                            <div class="panel-tab">
+                                <span>输出</span>
+                            </div>
+                            <div class="panel-tab">
+                                <span>调试控制台</span>
+                            </div>
+                        </div>
+                        <div class="panel-controls">
+                            <span class="panel-control">+</span>
+                            <span class="panel-control">⋮</span>
+                            <span class="panel-control">✕</span>
+                        </div>
+                    </div>
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-output" id="output"></div>
+                        <div class="terminal-input-line">
+                            <span class="prompt">PS C:\MMP></span>
+                            <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部状态栏 -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span class="status-item">🔀 main</span>
+                <span class="status-item">✓ 0 ✗ 0</span>
+            </div>
+            <div class="status-right">
+                <span class="status-item">Ln 15, Col 45</span>
+                <span class="status-item">UTF-8</span>
+                <span class="status-item">CRLF</span>
+                <span class="status-item">Python</span>
+                <span class="status-item">🔔</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
